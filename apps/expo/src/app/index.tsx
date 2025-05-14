@@ -28,6 +28,9 @@ function PostCard(props: {
               {props.post.title}
             </Text>
             <Text className="mt-2 text-foreground">{props.post.content}</Text>
+            <Text className="mt-2 text-foreground">
+              {props.post.backContent}
+            </Text>
           </Pressable>
         </Link>
       </View>
@@ -43,12 +46,14 @@ function CreatePost() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [backContent, setBackContent] = useState("");
 
   const { mutate, error } = useMutation(
     trpc.post.create.mutationOptions({
       async onSuccess() {
         setTitle("");
         setContent("");
+        setBackContent("");
         await queryClient.invalidateQueries(trpc.post.all.queryFilter());
       },
     }),
@@ -78,12 +83,24 @@ function CreatePost() {
           {error.data.zodError.fieldErrors.content}
         </Text>
       )}
+      <TextInput
+        className="items-center rounded-md border border-input bg-background px-3 text-lg leading-[1.25] text-foreground"
+        value={backContent}
+        onChangeText={setBackContent}
+        placeholder="Back Content"
+      />
+      {error?.data?.zodError?.fieldErrors.backContent && (
+        <Text className="mb-2 text-destructive">
+          {error.data.zodError.fieldErrors.backContent}
+        </Text>
+      )}
       <Pressable
         className="flex items-center rounded bg-primary p-2"
         onPress={() => {
           mutate({
             title,
             content,
+            backContent,
           });
         }}
       >

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   useMutation,
   useQueryClient,
@@ -28,6 +29,7 @@ export function CreatePostForm() {
   const form = useForm({
     schema: CreatePostSchema,
     defaultValues: {
+      backContent: "",
       content: "",
       title: "",
     },
@@ -82,6 +84,18 @@ export function CreatePostForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="backContent"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input {...field} placeholder="Back Content" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button>Create</Button>
       </form>
     </Form>
@@ -118,6 +132,7 @@ export function PostList() {
 export function PostCard(props: {
   post: RouterOutputs["post"]["all"][number];
 }) {
+  const [showBack, setShowBack] = useState(false);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const deletePost = useMutation(
@@ -136,16 +151,30 @@ export function PostCard(props: {
   );
 
   return (
-    <div className="flex flex-row rounded-lg bg-muted p-4">
-      <div className="flex-grow">
-        <h2 className="text-2xl font-bold text-primary">{props.post.title}</h2>
-        <p className="mt-2 text-sm">{props.post.content}</p>
-      </div>
+    <div
+      className="flex cursor-pointer flex-row rounded-lg bg-muted p-4"
+      onClick={() => setShowBack(!showBack)}
+    >
+      {showBack ? (
+        <div className="flex-grow">
+          <p className="mt-2 text-sm">{props.post.backContent}</p>
+        </div>
+      ) : (
+        <div className="flex-grow">
+          <h2 className="text-2xl font-bold text-primary">
+            {props.post.title}
+          </h2>
+          <p className="mt-2 text-sm">{props.post.content}</p>
+        </div>
+      )}
       <div>
         <Button
           variant="ghost"
           className="cursor-pointer text-sm font-bold uppercase text-primary hover:bg-transparent hover:text-white"
-          onClick={() => deletePost.mutate(props.post.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            deletePost.mutate(props.post.id);
+          }}
         >
           Delete
         </Button>

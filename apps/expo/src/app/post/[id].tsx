@@ -19,6 +19,7 @@ export default function Post() {
           {data.title}
         </Text>
         <Text className="py-4 text-foreground">{data.content}</Text>
+        <Text className="py-4 text-foreground">{data.backContent}</Text>
       </View>
     </SafeAreaView>
   );

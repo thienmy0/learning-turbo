@@ -7,6 +7,7 @@ export const Post = pgTable("post", (t) => ({
   id: t.uuid().notNull().primaryKey().defaultRandom(),
   title: t.varchar({ length: 256 }).notNull(),
   content: t.text().notNull(),
+  backContent: t.text().notNull(),
   createdAt: t.timestamp().defaultNow().notNull(),
   updatedAt: t
     .timestamp({ mode: "date", withTimezone: true })
@@ -16,6 +17,7 @@ export const Post = pgTable("post", (t) => ({
 export const CreatePostSchema = createInsertSchema(Post, {
   title: z.string().max(256),
   content: z.string().max(256),
+  backContent: z.string().max(256),
 }).omit({
   id: true,
   createdAt: true,
