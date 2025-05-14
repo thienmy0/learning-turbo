@@ -11,7 +11,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import type { Session } from "@acme/auth";
-import { auth, validateToken } from "@acme/auth";
+// import { auth, validateToken } from "@acme/auth";
 import { db } from "@acme/db/client";
 
 /**
@@ -20,9 +20,17 @@ import { db } from "@acme/db/client";
  * - Next.js requests will have a session token in cookies
  */
 const isomorphicGetSession = async (headers: Headers) => {
-  const authToken = headers.get("Authorization") ?? null;
-  if (authToken) return validateToken(authToken);
-  return auth();
+  // const authToken = headers.get("Authorization") ?? null;
+  // if (authToken) return validateToken(authToken);
+
+  return {
+    user: {
+      id: "mock-id",
+      name: "mock-name",
+      email: "mock-email",
+      image: "mock-image",
+    },
+  };
 };
 
 /**
